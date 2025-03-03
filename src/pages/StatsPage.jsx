@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import ChartComponent from '../components/Common/ChartComponent';
 import Navbar from '../components/Navbar';
 import statsService from '../services/statsService';
+import expenseService from '../services/expenseService';
+import incomeService from '../services/incomeService';
+import ChartComponent from '../components/Common/ChartComponent';
+import { subDays, format } from 'date-fns';
 
 const StatsPage = () => {
     const [totalIncome, setTotalIncome] = useState(0);
@@ -11,16 +14,17 @@ const StatsPage = () => {
 
     useEffect(() => {
         const userId = localStorage.getItem('userId'); // Get user ID from local storage
+        const endDate = new Date();
+        const startDate = subDays(endDate, 30);
 
         const fetchStats = async () => {
             try {
-                const response = await statsService.getStats(userId);
-                console.log('Total Income:', response.data.totalIncome);
-                console.log('Total Expenses:', response.data.totalExpense);
-                console.log('Balance:', response.data.balance);
-                setTotalIncome(response.data.totalIncome);
-                setTotalExpense(response.data.totalExpense);
-                setBalance(response.data.balance);
+                const statsResponse = await statsService.getStats(userId);
+                console.log('Stats response:', statsResponse.data);
+
+                setTotalIncome(statsResponse.data.totalIncome);
+                setTotalExpense(statsResponse.data.totalExpense);
+                setBalance(statsResponse.data.balance);
             } catch (error) {
                 console.error('Error fetching stats:', error);
             }
@@ -28,16 +32,23 @@ const StatsPage = () => {
 
         const fetchChartData = async () => {
             try {
-                const response = await statsService.getChartData(userId);
-                const expenseList = response.data.expenseList || [];
-                const incomeList = response.data.incomeList || [];
+                const expenseResponse = await expenseService.getExpensesByDateRange(userId, format(startDate, 'yyyy-MM-dd'), format(endDate, 'yyyy-MM-dd'));
+                const incomeResponse = await incomeService.getIncomesByDateRange(userId, format(startDate, 'yyyy-MM-dd'), format(endDate, 'yyyy-MM-dd'));
+                console.log('Expense List response:', expenseResponse.data);
+                console.log('Income List response:', incomeResponse.data);
 
-                console.log('Expense List:', expenseList);
-                console.log('Income List:', incomeList);
+                const expenseList = expenseResponse.data || [];
+                const incomeList = incomeResponse.data || [];
 
-                const labels = [...new Set([...expenseList.map(expense => expense.date), ...incomeList.map(income => income.date)])];
-                const incomeData = incomeList.map(income => ({ x: income.date, y: income.amount }));
-                const expenseData = expenseList.map(expense => ({ x: expense.date, y: expense.amount }));
+                const labels = [...new Set([...expenseList.map(expense => expense.date), ...incomeList.map(income => income.date)])].sort();
+                const incomeData = labels.map(label => {
+                    const income = incomeList.find(income => income.date === label);
+                    return income ? income.amount : 0;
+                });
+                const expenseData = labels.map(label => {
+                    const expense = expenseList.find(expense => expense.date === label);
+                    return expense ? expense.amount : 0;
+                });
 
                 console.log('Labels:', labels);
                 console.log('Income Data:', incomeData);
@@ -48,14 +59,20 @@ const StatsPage = () => {
                     datasets: [
                         {
                             label: 'Income',
-                            data: incomeData,
+                            data: labels.map(label => {
+                                const income = incomeList.find(income => income.date === label);
+                                return { x: label, y: income ? income.amount : 0 };
+                            }),
                             borderColor: 'rgba(75, 192, 192, 1)',
                             backgroundColor: 'rgba(75, 192, 192, 0.2)',
                             fill: true,
                         },
                         {
                             label: 'Expense',
-                            data: expenseData,
+                            data: labels.map(label => {
+                                const expense = expenseList.find(expense => expense.date === label);
+                                return { x: label, y: expense ? expense.amount : 0 };
+                            }),
                             borderColor: 'rgba(255, 99, 132, 1)',
                             backgroundColor: 'rgba(255, 99, 132, 0.2)',
                             fill: true,

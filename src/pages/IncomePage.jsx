@@ -30,7 +30,12 @@ const IncomePage = () => {
             <Navbar />
             <div className="container mt-5">
                 <div className="row">
-                    <div className="col-md-6">
+                    <div className="col-md-12">
+                        <h2 className="text-center mb-4">Manage Incomes</h2>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-md-6 mb-4">
                         <FormComponent type="Income" onAdd={fetchIncomes} />
                     </div>
                     <div className="col-md-6">

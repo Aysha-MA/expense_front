@@ -30,7 +30,12 @@ const ExpensePage = () => {
             <Navbar />
             <div className="container mt-5">
                 <div className="row">
-                    <div className="col-md-6">
+                    <div className="col-md-12">
+                        <h2 className="text-center mb-4">Manage Expenses</h2>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-md-6 mb-4">
                         <FormComponent type="Expense" onAdd={fetchExpenses} />
                     </div>
                     <div className="col-md-6">
@@ -41,4 +46,5 @@ const ExpensePage = () => {
         </>
     );
 };
+
 export default ExpensePage;
