@@ -11,8 +11,12 @@ const getChartData = (userId) => {
         params: { userId },
     });
 };
+const getDashboard = () => {
+    return axiosInstance.get(`/statistics/dashboard`);
+};
 
 export default {
     getStats,
     getChartData,
+    getDashboard,
 };

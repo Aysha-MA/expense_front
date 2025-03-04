@@ -1,7 +1,11 @@
-import React from 'react';
+import React,{useEffect} from 'react';
 import { Link } from 'react-router-dom';
 
-const Welcome = () => (
+const Welcome = () => {
+  useEffect(() => {
+    localStorage.clear();
+  }, []);
+  return(
   <div className="container text-center my-5">
     <div className="jumbotron bg-light p-5 shadow-lg">
       <h1 className="display-4">Welcome to Expense Income Tracker</h1>
@@ -13,5 +17,6 @@ const Welcome = () => (
     </div>
   </div>
 );
+};
 
 export default Welcome;

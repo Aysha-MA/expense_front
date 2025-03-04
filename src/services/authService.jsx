@@ -1,11 +1,10 @@
-import axios from 'axios';
 import axiosInstance from './axiosInstance';
 
-const API_URL = 'http://localhost:9194/auth/';
+const API_URL = '/auth/';
 
 const register = async (username, email, password) => {
     try {
-        const response = await axios.post(API_URL + 'new', {
+        const response = await axiosInstance.post(API_URL + 'new', {
             name: username,
             email,
             password,
@@ -19,7 +18,7 @@ const register = async (username, email, password) => {
 
 const login = async (username, password) => {
     try {
-        const response = await axios.post(API_URL + 'authenticate', {
+        const response = await axiosInstance.post(API_URL + 'authenticate', {
             username,
             password,
         });

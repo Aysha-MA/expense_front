@@ -1,10 +1,27 @@
-import React from 'react';
-import Dashboard from '../components/Dashboard';
+import React, { useEffect } from 'react';
 import Navbar from '../components/Navbar';
+import Dashboard from '../components/Dashboard';
+import apiService from '../services/statsService';
 
-const DashboardPage = () => <>
-      <Navbar />
-       <Dashboard />;
-       </>
+const DashboardPage = () => {
+    useEffect(() => {
+        const fetchDashboardData = async () => {
+            try {
+                await apiService.getDashboard();
+            } catch (error) {
+                console.error('Error fetching dashboard data:', error);
+            }
+        };
+
+        fetchDashboardData();
+    }, []);
+
+    return (
+        <>
+            <Navbar />
+            <Dashboard />
+        </>
+    );
+};
 
 export default DashboardPage;

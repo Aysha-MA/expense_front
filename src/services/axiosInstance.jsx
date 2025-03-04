@@ -7,6 +7,18 @@ const axiosInstance = axios.create({
     },
 });
 
+let alertShown = false;
+
+const showAlert = (message) => {
+    if (!alertShown) {
+        alert(message);
+        alertShown = true;
+        setTimeout(() => {
+            alertShown = false;
+        }, 500); // Adjust the timeout as needed
+    }
+};
+
 // Request Interceptor (Attach Token)
 axiosInstance.interceptors.request.use(
     (config) => {
@@ -26,11 +38,11 @@ axiosInstance.interceptors.response.use(
     (response) => response, // If successful, return response
     (error) => {
         if (error.response) {
-            if (error.response.status === 401) {
-                alert('Session expired! Redirecting to login...');
-                window.location.href = '/login';
+            if (error.response.status === 403) {
+                showAlert('Access forbidden! You do not have permission to access this resource.');
+                window.location.href = "/";
             } else if (error.response.status === 500) {
-                alert('Server error! Please try again later.');
+                showAlert('Server error! Please try again later.');
             }
         }
         return Promise.reject(error);

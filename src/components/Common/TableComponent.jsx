@@ -52,7 +52,7 @@ const TableComponent = ({ type, data, onDelete }) => {
                     {data.map(item => (
                         <tr key={item.id}>
                             <td>{item.title}</td>
-                            <td>{item.description}</td>
+                            <td className="table-description">{item.description}</td>
                             <td>{item.category}</td>
                             <td>{item.amount}</td>
                             <td>{item.date}</td>

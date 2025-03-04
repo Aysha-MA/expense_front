@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import WelcomeNav from '../components/WelcomeNav';
 import authService from '../services/authService';
@@ -6,10 +6,26 @@ import authService from '../services/authService';
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [errors, setErrors] = useState({});
     const navigate = useNavigate();
+
+    const validate = () => {
+        const errors = {};
+        if (!username) errors.username = 'Username is required';
+        if (!password) errors.password = 'Password is required';
+        return errors;
+    };
+    useEffect(() => {
+        localStorage.clear();
+      }, []);
 
     const handleLogin = async (event) => {
         event.preventDefault();
+        const validationErrors = validate();
+        if (Object.keys(validationErrors).length > 0) {
+            setErrors(validationErrors);
+            return;
+        }
         try {
             const response = await authService.login(username, password);
             localStorage.setItem('token', response.token);
@@ -39,6 +55,7 @@ const Login = () => {
                                 onChange={(e) => setUsername(e.target.value)}
                                 required
                             />
+                            {errors.username && <small className="text-danger">{errors.username}</small>}
                         </div>
                         <div className="form-group">
                             <label>Password</label>
@@ -49,6 +66,7 @@ const Login = () => {
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
                             />
+                            {errors.password && <small className="text-danger">{errors.password}</small>}
                         </div>
                         <button type="submit" className="btn btn-primary btn-block mt-3">
                             Login
