@@ -19,9 +19,10 @@ const FormComponent = ({ type, onAdd }) => {
 
     const validate = () => {
         const errors = {};
+        const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
         if (!formData.title) errors.title = 'Title is required';
         if (formData.title.length > 10) errors.title = 'Title cannot exceed 10 characters';
-        if (!formData.description) errors.description = 'Description is required';
+        // if (!formData.description) errors.description = 'Description is required';
         if (formData.description.length > 50) errors.description = 'Description cannot exceed 50 characters';
         if (!formData.category) errors.category = 'Category is required';
         if (!formData.amount) errors.amount = 'Amount is required';
@@ -31,6 +32,7 @@ const FormComponent = ({ type, onAdd }) => {
         } else {
             const year = formData.date.split('-')[0];
             if (year.length !== 4) errors.date = 'Year must be 4 digits';
+            if (formData.date > today) errors.date = 'Date cannot be in the future';
         }
         return errors;
     };

@@ -1,4 +1,4 @@
-import React, { useState , useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import WelcomeNav from '../components/WelcomeNav';
 import authService from '../services/authService';
@@ -15,9 +15,12 @@ const Login = () => {
         if (!password) errors.password = 'Password is required';
         return errors;
     };
+
     useEffect(() => {
         localStorage.clear();
-      }, []);
+        setUsername(''); // Reset username
+        setPassword(''); // Reset password
+    }, []);
 
     const handleLogin = async (event) => {
         event.preventDefault();

@@ -83,6 +83,11 @@ code {
   word-wrap: break-word; 
   max-width: 100px;
 }
+@media (max-width: 768px) {
+    .navbar {
+        display: block;
+    }
+}
 .table th, .table td {
   vertical-align: middle;
 }

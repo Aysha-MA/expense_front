@@ -28,8 +28,12 @@ const login = async (username, password) => {
         throw error;
     }
 };
+const deleteUser = (userId) => {
+    return axiosInstance.delete(API_URL +`delete/${userId}`);
+};
 
 export default {
     register,
     login,
+    deleteUser,
 };
