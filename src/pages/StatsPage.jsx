@@ -40,39 +40,41 @@ const StatsPage = () => {
                 const expenseList = expenseResponse.data || [];
                 const incomeList = incomeResponse.data || [];
 
-                const labels = [...new Set([...expenseList.map(expense => expense.date), ...incomeList.map(income => income.date)])].sort();
-                const incomeData = labels.map(label => {
-                    const income = incomeList.find(income => income.date === label);
-                    return income ? income.amount : 0;
-                });
-                const expenseData = labels.map(label => {
-                    const expense = expenseList.find(expense => expense.date === label);
-                    return expense ? expense.amount : 0;
+                const processedData = {};
+
+                expenseList.forEach(expense => {
+                    const date = expense.date.split('T')[0];
+                    if (!processedData[date]) {
+                        processedData[date] = { income: 0, expense: 0 };
+                    }
+                    processedData[date].expense += expense.amount;
                 });
 
-                console.log('Labels:', labels);
-                console.log('Income Data:', incomeData);
-                console.log('Expense Data:', expenseData);
+                incomeList.forEach(income => {
+                    const date = income.date.split('T')[0];
+                    if (!processedData[date]) {
+                        processedData[date] = { income: 0, expense: 0 };
+                    }
+                    processedData[date].income += income.amount;
+                });
+
+                const labels = Object.keys(processedData).sort();
+                const incomeData = labels.map(date => processedData[date].income);
+                const expenseData = labels.map(date => processedData[date].expense);
 
                 setChartData({
                     labels,
                     datasets: [
                         {
                             label: 'Income',
-                            data: labels.map(label => {
-                                const income = incomeList.find(income => income.date === label);
-                                return { x: label, y: income ? income.amount : 0 };
-                            }),
+                            data: incomeData,
                             borderColor: 'rgba(75, 192, 192, 1)',
                             backgroundColor: 'rgba(75, 192, 192, 0.2)',
                             fill: true,
                         },
                         {
                             label: 'Expense',
-                            data: labels.map(label => {
-                                const expense = expenseList.find(expense => expense.date === label);
-                                return { x: label, y: expense ? expense.amount : 0 };
-                            }),
+                            data: expenseData,
                             borderColor: 'rgba(255, 99, 132, 1)',
                             backgroundColor: 'rgba(255, 99, 132, 0.2)',
                             fill: true,
