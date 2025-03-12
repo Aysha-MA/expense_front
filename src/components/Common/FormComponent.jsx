@@ -107,6 +107,7 @@ const FormComponent = ({ type, onAdd }) => {
                                 placeholder="Enter category"
                                 value={formData.category}
                                 onChange={handleChange}
+                                maxLength="10"
                             />
                             {errors.category && <small className="text-danger">{errors.category}</small>}
                         </div>

@@ -53,7 +53,7 @@ const TableComponent = ({ type, data, onDelete }) => {
                         <tr key={item.id}>
                             <td>{item.title}</td>
                             <td className="table-description">{item.description}</td>
-                            <td>{item.category}</td>
+                            <td className="table-description" >{item.category}</td>
                             <td>{item.amount}</td>
                             <td>{item.date}</td>
                             <td>
